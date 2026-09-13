@@ -44,7 +44,7 @@ jobs:
     - name: Build GUI
       run: |
         cd scratch-gui
-        npm ci
+        npm install --legacy-peer-deps
         NODE_ENV=production ROUTING_STYLE=hash npm run build
         cd ..
     - name: Patch
