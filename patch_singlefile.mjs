@@ -1,8 +1,8 @@
 /*
-	EXTREMELY messy script to bundle TurboWarp and all of its assets into a single HTML file.
+	EXTREMELY messy script to bundle PotentiaMod, a mod of TurboWarp, and all of its assets into a single HTML file.
 
 	Arguments (all optional):
-	--output [path] - set the output file. defaults to tw-standalone[-offline-extensions].html
+	--output [path] - set the output file. defaults to pot-standalone[-offline-extensions].html
 	--guiPath [path] - set the path to the GUI. defaults to scratch-gui/build
 	--extensions [path?] - enable inlining extensions, with an optional path. defaults to extensions/build if path not set
 	--debug - outputs inlined assets to a folder
@@ -13,7 +13,7 @@ import * as fsSync from "node:fs";
 import * as path from "node:path";
 import {argv} from "node:process";
 
-// If true, builds with an integrated extensions.turbowarp.org mirror.
+// If true, builds with an integrated potentiamod.github.io/extensions/ mirror.
 // Not implemented yet.
 const withExtensions = argv.includes("--extensions");
 // Write processed (inlinable) assets back into a folder.
@@ -24,7 +24,7 @@ let guiPath = "scratch-gui/build/";
 // Path to get built extensions from.
 let extensionsPath = "extensions/build/";
 // Output file.
-let output = "tw-standalone" + (withExtensions ? "-offline-extensions" : "") + ".html";
+let output = "pot-standalone" + (withExtensions ? "-offline-extensions" : "") + ".html";
 
 argv.forEach((val, index) => {
 	if (val === "--guiPath") {
@@ -38,7 +38,7 @@ argv.forEach((val, index) => {
 	}
 });
 
-const extsTwOrg = "https://extensions.turbowarp.org/";
+const extsTwOrg = "https://potentiamod.github.io/extensions/";
 
 const inlinedRegexes = [
 	String.raw`js/pentapod/\w.+?\.js`,
@@ -53,7 +53,7 @@ const inlinedRawRegexes = [
 	// scratch-blocks zoom icons
 	String.raw`\w+\.options\.pathToMedia\+this\.\w+_PATH_`,
 	// extension thumbnails
-	withExtensions && String.raw`"https://extensions.turbowarp.org/"\.concat\(\w+\.image\|\|"images/unknown.svg"\)`
+	withExtensions && String.raw`"https://potentiamod.github.io/extensions/"\.concat\(\w+\.image\|\|"images/unknown.svg"\)`
 ].filter(o => o);
 const convertRegex = new RegExp(`(["'])(${inlinedRegexes.map(o => "(?:" + o + ")").join("|")})\\1`, "gi");
 const convertRawRegex = new RegExp(`(${inlinedRawRegexes.map(o => "(?:" + o + ")").join("|")})`, "gi");
@@ -89,8 +89,8 @@ function generateBlobCode(html) {
 	// Generated code to make everything work in a single file
 	// Creates blob: URLs for every other file and puts them in an object for further retrieval
 	
-	// Base85 decoder originally from the TurboWarp Packager:
-	// https://github.com/TurboWarp/packager/blob/master/src/packager/base85.js
+	// Base85 decoder originally from the PotentiaMod Packager:
+	// https://github.com/PotentiaMod/packager/blob/master/src/packager/base85.js
 	const getBase85DecodeValue = (code) => {
 		if (code === 0x28) code = 0x3c;
 		if (code === 0x29) code = 0x3e;
@@ -146,7 +146,7 @@ function generateBlobCode(html) {
 			return oldFetch.apply(this, [window.___BLOB_URLS[args[0]], ...args.slice(1)]);
 		return oldFetch.apply(this, args);
 	};
-	// Redirect extensions.turbowarp.org script tags (unsandboxed extensions) to our inlined files
+	// Redirect potentiamod.github.io/extensions/ script tags (unsandboxed extensions) to our inlined files
 	const oldAppendChild = document.body.appendChild;
 	document.body.appendChild = function(...args) {
 		const firstArg = args[0];
@@ -209,8 +209,8 @@ function inlineScriptTags(file) {
 }
 
 
-// Base85 encoder originally from the TurboWarp Packager:
-// https://github.com/TurboWarp/packager/blob/master/src/packager/base85.js
+// Base85 encoder originally from the PotentiaMod Packager:
+// https://github.com/PotentiaMod/packager/blob/master/src/packager/base85.js
 const getBase85EncodeCharacter = (n) => {
   n += 0x2a;
   if (n === 0x3c) return 0x28;

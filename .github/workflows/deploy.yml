@@ -18,8 +18,8 @@ jobs:
   build:
     strategy:
       matrix:
-        mod: [turbowarp]
-        # mod: [turbowarp, EXPERIMENTAL-penguinmod]
+        mod: [potentiamod]
+        # mod: [potentiamod, penguinmod EXPERIMENTAL-gaiamod]
     name: "build: ${{ matrix.mod }}"
     runs-on: ubuntu-latest
     steps:
@@ -34,24 +34,18 @@ jobs:
     - name: Checkout scratch-gui
       uses: actions/checkout@v4
       with:
-        repository: ${{ (matrix.mod == 'turbowarp' && 'TurboWarp/scratch-gui') || 'PenguinMod/penguinmod.github.io' }}
+        repository: ${{ (matrix.mod == 'potentiamod' && 'PotentiaMod/scratch-gui') || matrix.mod == 'penguinmod' && 'PenguinMod/penguinmod.github.io') || 'GaiaMod-Main/gaiamod-main.github.io' }}
         path: scratch-gui
-    - name: Checkout TurboWarp extensions
+    - name: Checkout PotentiaMod extensions
       uses: actions/checkout@v4
       with:
-        repository: TurboWarp/extensions
+        repository: PotentiaMod/extensions
         path: extensions
     - name: Build GUI
       run: |
         cd scratch-gui
         npm ci
         NODE_ENV=production ROUTING_STYLE=hash npm run build
-        cd ..
-    - name: Build extensions
-      run: |
-        cd extensions
-        npm ci
-        NODE_ENV=production npm run build
         cd ..
     - name: Patch
       run: python3 patch.py
@@ -61,8 +55,8 @@ jobs:
         node patch_singlefile.mjs --extensions
     - name: Rename files to match mod
       run: |
-        mv tw-standalone.html ${{ matrix.mod }}-standalone.html
-        mv tw-standalone-offline-extensions.html ${{ matrix.mod }}-standalone-offline-extensions.html
+        mv pot-standalone.html ${{ matrix.mod }}-standalone.html
+        mv pot-standalone-offline-extensions.html ${{ matrix.mod }}-standalone-offline-extensions.html
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
@@ -91,12 +85,12 @@ jobs:
     - name: Release
       uses: softprops/action-gh-release@v2.0.9
       with:
-        name: Standalone TurboWarp Build
+        name: Standalone PotentiaMod Build
         tag_name: build
         body: |
-          Download the `tw-standalone.html` file below and open it in your browser to use TurboWarp.
+          Download the `pot-standalone.html` file below and open it in your browser to use PotentiaMod.
           Still very experimental, not all things will work properly.
-          By default, unsandboxed TurboWarp extensions are still fetched from extensions.turbowarp.org. Use `tw-standalone-offline-extensions.html` instead for the extensions themselves to work offline, but documentation pages, extension example files, sample projects and the standalone library page (not the one in the editor) will still only be online.
+          By default, unsandboxed PotentiaMod extensions are still fetched from potentiamod.github.io/extensions. Use `pot-standalone-offline-extensions.html` instead for the extensions themselves to work offline, but documentation pages, extension example files, sample projects and the standalone library page (not the one in the editor) will still only be online.
           This download updates weekly (apparently at 18:52, idk the timezone, on Tuesdays).
         files: "*.*"
         make_latest: true
