@@ -22,7 +22,7 @@ const debugAssets = argv.includes("--debug");
 // Path to get GUI build from.
 let guiPath = "scratch-gui/build/";
 // Path to get built extensions from.
-let extensionsPath = "extensions/build/";
+let extensionsPath = "extensions/";
 // Output file.
 let output = "pot-standalone" + (withExtensions ? "-offline-extensions" : "") + ".html";
 
