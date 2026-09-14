@@ -52,11 +52,9 @@ jobs:
     - name: Bundle into single file
       run: |
         node patch_singlefile.mjs
-        node patch_singlefile.mjs --extensions
     - name: Rename files to match mod
       run: |
         mv pot-standalone.html ${{ matrix.mod }}-standalone.html
-        mv pot-standalone-offline-extensions.html ${{ matrix.mod }}-standalone-offline-extensions.html
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
@@ -66,7 +64,6 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.mod }}-standalone-offline-extensions
-        path: ${{ matrix.mod }}-standalone-offline-extensions.html
   
   release:
     needs: [build]
@@ -90,7 +87,7 @@ jobs:
         body: |
           Download the `pot-standalone.html` file below and open it in your browser to use PotentiaMod.
           Still very experimental, not all things will work properly.
-          By default, unsandboxed PotentiaMod extensions are still fetched from potentiamod.github.io/extensions. Use `pot-standalone-offline-extensions.html` instead for the extensions themselves to work offline, but documentation pages, extension example files, sample projects and the standalone library page (not the one in the editor) will still only be online.
+          By default, unsandboxed PotentiaMod extensions are still fetched from potentiamod.github.io/extensions.
           This download updates weekly (apparently at 18:52, idk the timezone, on Tuesdays).
         files: "*.*"
         make_latest: true
